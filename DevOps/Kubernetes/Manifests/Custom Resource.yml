@@ -1,0 +1,10 @@
+#we create a Custom Resource (CR) using the CRD 
+#First create CRD then create CR
+apiVersion: mycompany.com/v1
+kind: Database
+metadata:
+  name: mydatabase
+spec:
+  dbName: mydb
+  dbUser: admin
+  replicas: 3
