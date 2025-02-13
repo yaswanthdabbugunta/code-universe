@@ -1,0 +1,89 @@
+# ✅ Cluster Information & Configuration
+kubectl version                         # Check the Kubernetes version
+kubectl cluster-info                     # Get cluster information
+kubectl config view                      # View the current Kubernetes config
+kubectl config current-context           # Show the active cluster context
+kubectl config get-contexts              # List available contexts
+kubectl config use-context <context>     # Switch to another context
+kubectl get componentstatuses            # Check the health of cluster components
+
+# ✅ Working with Nodes
+kubectl get nodes                        # List all nodes in the cluster
+kubectl describe node <node-name>        # Get detailed information about a node
+kubectl cordon <node-name>               # Mark a node as unschedulable
+kubectl uncordon <node-name>             # Mark a node as schedulable
+kubectl drain <node-name>                # Evict all pods from a node before maintenance
+kubectl delete node <node-name>          # Delete a node from the cluster
+
+# ✅ Working with Pods
+kubectl get pods                         # List all pods in the current namespace
+kubectl get pods -A                      # List all pods across all namespaces
+kubectl describe pod <pod-name>          # Get detailed information about a pod
+kubectl logs <pod-name>                  # Get logs from a pod
+kubectl logs -f <pod-name>               # Stream logs from a pod
+kubectl exec -it <pod-name> -- /bin/sh   # Open a shell inside a running pod
+kubectl delete pod <pod-name>            # Delete a pod
+kubectl apply -f <pod.yaml>              # Create/update a pod from a YAML file
+
+# ✅ Working with Deployments
+kubectl get deployments                  # List all deployments
+kubectl describe deployment <deployment-name>  # Get details of a deployment
+kubectl rollout status deployment <deployment-name>  # Check rollout status
+kubectl rollout history deployment <deployment-name>  # Show deployment history
+kubectl rollout undo deployment <deployment-name>    # Rollback to the previous version
+kubectl delete deployment <deployment-name>          # Delete a deployment
+
+# ✅ Working with Services
+kubectl get services                     # List all services
+kubectl describe service <service-name>  # Get details of a service
+kubectl delete service <service-name>    # Delete a service
+kubectl expose deployment <deployment-name> --type=LoadBalancer --port=80  # Expose a deployment as a service
+
+# ✅ Working with Namespaces
+kubectl get namespaces                   # List all namespaces
+kubectl create namespace <namespace>     # Create a new namespace
+kubectl delete namespace <namespace>     # Delete a namespace
+
+# ✅ Working with ConfigMaps & Secrets
+kubectl get configmaps                   # List all ConfigMaps
+kubectl describe configmap <configmap-name>  # Get details of a ConfigMap
+kubectl delete configmap <configmap-name>    # Delete a ConfigMap
+kubectl create configmap <configmap-name> --from-literal=key=value  # Create a ConfigMap from CLI
+kubectl get secrets                      # List all secrets
+kubectl describe secret <secret-name>    # Get details of a secret
+kubectl delete secret <secret-name>      # Delete a secret
+kubectl create secret generic <secret-name> --from-literal=key=value  # Create a secret
+
+# ✅ Working with Persistent Volumes & Storage
+kubectl get pv                           # List all Persistent Volumes (PVs)
+kubectl get pvc                          # List all Persistent Volume Claims (PVCs)
+kubectl describe pvc <pvc-name>          # Get details of a PVC
+kubectl delete pvc <pvc-name>            # Delete a PVC
+
+# ✅ Working with Ingress
+kubectl get ingress                      # List all Ingress resources
+kubectl describe ingress <ingress-name>  # Get details of an Ingress resource
+kubectl delete ingress <ingress-name>    # Delete an Ingress resource
+
+# ✅ RBAC - Roles & RoleBindings
+kubectl get roles                        # List all roles
+kubectl get rolebindings                 # List all role bindings
+kubectl describe role <role-name>        # Get details of a role
+kubectl describe rolebinding <rolebinding-name>  # Get details of a role binding
+kubectl delete role <role-name>          # Delete a role
+kubectl delete rolebinding <rolebinding-name>    # Delete a role binding
+
+# ✅ Troubleshooting & Debugging
+kubectl get events                       # List recent events in the cluster
+kubectl describe pod <pod-name>          # Get details of a pod, including errors
+kubectl logs <pod-name>                  # View logs of a pod
+kubectl logs -f <pod-name>               # Stream logs of a pod
+kubectl exec -it <pod-name> -- /bin/sh   # Open a shell inside a pod
+kubectl top pod                           # Show CPU and memory usage of pods
+kubectl top node                          # Show CPU and memory usage of nodes
+
+# ✅ Miscellaneous
+kubectl apply -f <file.yaml>              # Apply a configuration from a YAML file
+kubectl delete -f <file.yaml>             # Delete resources from a YAML file
+kubectl get all                           # Get all resources in the current namespace
+kubectl get all -A                        # Get all resources in all namespaces

@@ -1,0 +1,113 @@
+# ✅ Docker Version & System Information
+docker version                            # Show Docker version
+docker info                               # Display system-wide information
+docker system df                          # Show disk usage by Docker
+
+docker system prune -a                    # Remove all unused images, containers, networks
+
+docker login                              # Authenticate to a Docker registry
+docker logout                             # Logout from a Docker registry
+
+# ✅ Working with Containers
+docker ps                                 # List running containers
+docker ps -a                              # List all containers (including stopped ones)
+docker inspect <container_id>             # Display detailed information about a container
+docker logs <container_id>                # Fetch logs from a container
+docker logs -f <container_id>             # Stream logs from a container
+docker top <container_id>                 # Show running processes in a container
+docker stats                              # Show real-time resource usage of containers
+docker exec -it <container_id> /bin/sh    # Open a shell in a running container
+docker stop <container_id>                # Stop a running container
+docker start <container_id>               # Start a stopped container
+docker restart <container_id>             # Restart a container
+docker kill <container_id>                # Kill a running container
+docker rm <container_id>                  # Remove a container
+docker rm $(docker ps -aq)                # Remove all containers
+
+# ✅ Working with Images
+docker images                             # List all Docker images
+docker pull <image_name>                  # Download an image from Docker Hub
+docker push <image_name>                  # Upload an image to Docker Hub
+docker build -t <image_name>:<tag> .      # Build an image from a Dockerfile
+docker tag <image_id> <repo>:<tag>        # Tag an image
+docker rmi <image_id>                     # Remove an image
+docker rmi $(docker images -q)            # Remove all images
+
+docker save -o <image.tar> <image_name>   # Save an image to a tar file
+docker load -i <image.tar>                # Load an image from a tar file
+
+# ✅ Running Containers
+docker run <image_name>                   # Run a container from an image
+docker run -d <image_name>                 # Run a container in detached mode
+docker run -it <image_name> /bin/sh       # Run an interactive container with a shell
+docker run --name <container_name> <image_name>  # Assign a custom name to a container
+docker run -p 8080:80 <image_name>        # Map a host port to a container port
+docker run -v /host/path:/container/path <image_name>  # Mount a volume
+
+docker run --rm <image_name>              # Run and remove the container after exit
+
+docker update --memory 512m <container_id>  # Update resource limits for a container
+
+# ✅ Working with Networks
+docker network ls                         # List all networks
+docker network create <network_name>      # Create a new network
+docker network inspect <network_name>     # Get network details
+docker network connect <network_name> <container_id>  # Connect a container to a network
+docker network disconnect <network_name> <container_id>  # Disconnect a container from a network
+docker network rm <network_name>          # Remove a network
+
+# ✅ Working with Volumes
+docker volume ls                          # List all volumes
+docker volume create <volume_name>        # Create a volume
+docker volume inspect <volume_name>       # Get details of a volume
+docker volume rm <volume_name>            # Remove a volume
+docker volume prune                       # Remove all unused volumes
+
+docker run -v <volume_name>:/data <image_name>  # Mount a volume to a container
+
+# ✅ Docker Compose
+docker-compose up                         # Start services in docker-compose.yml
+docker-compose up -d                      # Start services in detached mode
+docker-compose down                       # Stop and remove containers, networks, and volumes
+docker-compose ps                         # List running containers in a Compose project
+docker-compose logs -f                    # Show logs from Compose services
+
+docker-compose build                      # Build images for services defined in docker-compose.yml
+docker-compose restart                    # Restart services
+
+# ✅ Docker Swarm
+docker swarm init                         # Initialize a Swarm cluster
+docker swarm join --token <token> <manager-ip>:2377  # Join a Swarm cluster
+docker node ls                            # List all nodes in the Swarm cluster
+docker service create --name <service_name> <image_name>  # Create a new service in Swarm
+docker service ls                         # List running services
+docker service ps <service_name>          # List tasks in a service
+docker service scale <service_name>=3     # Scale a service to 3 replicas
+docker service rm <service_name>          # Remove a service
+
+docker stack deploy -c docker-compose.yml <stack_name>  # Deploy a stack in Swarm
+docker stack ls                           # List running stacks
+docker stack rm <stack_name>              # Remove a stack
+
+# ✅ Docker Cleanup Commands
+docker system prune                       # Remove unused containers, images, and networks
+docker system prune -a                    # Remove all unused images and containers
+docker container prune                    # Remove all stopped containers
+docker image prune                        # Remove all unused images
+docker volume prune                       # Remove all unused volumes
+docker network prune                      # Remove all unused networks
+
+# ✅ Docker Additinal Commands
+docker attach <container_id>                 # Attach to a running container
+docker cp <container_id>:/path/to/file /host/path  # Copy files from container to host
+docker cp /host/path <container_id>:/path/to/file  # Copy files from host to container
+
+docker rename <old_name> <new_name>         # Rename a container
+docker commit <container_id> <new_image>    # Create a new image from a container’s changes
+docker history <image_name>                 # Show the history of an image
+docker diff <container_id>                  # Show changes in the container's filesystem
+docker events                               # Show real-time Docker events
+
+docker checkpoint create <container_id> <checkpoint_name>  # Create a checkpoint for a container
+docker checkpoint ls <container_id>         # List checkpoints
+docker checkpoint rm <container_id> <checkpoint_name>  # Remove a checkpoint
