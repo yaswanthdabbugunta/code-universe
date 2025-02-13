@@ -1,0 +1,63 @@
+@echo off
+setlocal enabledelayedexpansion
+
+:: Set the log folder and file with timestamp
+set "log_folder=%userprofile%"
+set "log_file=log_%date:~4,2%-%date:~7,2%-%date:~10,4%_%time:~0,2%-%time:~3,2%-%time:~6,2%.txt"
+set "log_path=%log_folder%\%log_file%"
+
+echo Logging command output to %log_path%
+echo.
+
+:: Prompt for App Configuration connection string
+set /p "connection_string_name=Enter the Appconfig Connection String: "
+
+:: Step 1: Backup current App Configuration values
+echo Taking backup of current App Configuration values... >> %log_path%
+call az appconfig kv export --destination file --path appconfig_backup.json --format json --connection-string "%connection_string_name%"
+if errorlevel 1 (	
+    echo Failed to export current App Configuration values. Aborting. >> %log_path%
+    exit /b 1
+)
+echo Backup completed and saved to appconfig_backup.json. >> %log_path%
+
+:: Step 2: Import new App Configuration values from the JSON file
+echo Importing new App Configuration values from UAT-Update-AppConfig-v2.json... >> %log_path%
+call az appconfig kv import --source file --path UAT-Update-AppConfig-v2.json --format json --connection-string "%connection_string_name%"
+if errorlevel 1 (
+    echo Failed to import new App Configuration values. Aborting. >> %log_path%
+    exit /b 1
+)
+echo Import completed. >> %log_path%
+
+:: Step 3: Export the updated App Configuration values
+echo Exporting updated App Configuration values... >> %log_path%
+call az appconfig kv export --destination file --path appconfig_after_import.json --format json --connection-string "%connection_string_name%"
+if errorlevel 1 (
+    echo Failed to export App Configuration values after import. Aborting. >> %log_path%
+    exit /b 1
+)
+echo Export completed and saved to appconfig_after_import.json. >> %log_path%
+
+:: Restarting all pods in the xxx namespace
+echo Restarting all pods in xxx namespace... >> %log_path%
+kubectl rollout restart deployment -n xxx
+if errorlevel 1 (
+    echo Failed to restart pods in xxx namespace. >> %log_path%
+    exit /b 1
+)
+echo Pods restarted in xxx namespace. >> %log_path%
+
+:: Restarting all pods in the xxx namespace
+echo Restarting all pods in xxx namespace... >> %log_path%
+kubectl rollout restart deployment -n xxx
+if errorlevel 1 (
+    echo Failed to restart pods in xxx namespace. >> %log_path%
+    exit /b 1
+)
+echo Pods restarted in xxx namespace. >> %log_path%
+
+echo.
+echo Command execution completed. Log saved to %log_path%
+
+endlocal

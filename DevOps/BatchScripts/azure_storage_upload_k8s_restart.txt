@@ -1,0 +1,65 @@
+@echo off
+
+set "log_folder=C:\Logs\Storage"
+set "log_file=log_%date:~4,2%-%date:~7,2%-%date:~10,4%_%time:~0,2%-%time:~3,2%-%time:~6,2%.txt"
+set "log_path=%log_folder%\%log_file%"
+
+set /p staccname="Enter storage account name: "
+set /p acckey="Enter account key: "
+
+
+echo Logging started... > %log_path%
+echo Storage Account: %staccname% >> %log_path%
+echo --------------------------------- >> %log_path%
+echo Name                               Last Modified >> %log_path%
+echo --------------------------------- >> %log_path%
+
+rem Log the status of files before upload
+rem instead of xxx change to container-name
+call az storage blob list --account-name %staccname% --account-key %acckey% --container-name xxx --output tsv --query "[].{Name:name, LastModified:properties.lastModified}" >> %log_path%
+
+rem Upload files
+rem instead of xxx change to container-name
+call az storage blob upload-batch -d xxx --account-name %staccname% --account-key %acckey% -s . --pattern *.pdf -t block --overwrite
+call az storage blob upload-batch -d xxx --account-name %staccname% --account-key %acckey% -s . --pattern *.png -t block --overwrite
+call az storage blob upload-batch -d xxx --account-name %staccname% --account-key %acckey% -s . --pattern *.jpeg -t block --overwrite
+call az storage blob upload-batch -d xxx --account-name %staccname% --account-key %acckey% -s . --pattern *.xlsx -t block --overwrite
+
+rem Log the status of files after upload
+echo --------------------------------- >> %log_path%
+echo Status after upload: >> %log_path%
+call az storage blob list --account-name %staccname% --account-key %acckey% --container-name xxx --output tsv --query "[].{Name:name, LastModified:properties.lastModified}" >> %log_path%
+
+echo --------------------------------- >> %log_path%
+
+:: Restarting all pods in the xxx namespace
+echo Restarting all pods in xxx namespace... >> %log_path%
+kubectl rollout restart deployment -n xxx
+if errorlevel 1 (
+    echo Failed to restart pods in xxx namespace. >> %log_path%
+    exit /b 1
+)
+echo Pods restarted in xxx namespace. >> %log_path%
+
+:: Restarting all pods in the xxx namespace
+echo Restarting all pods in xxx namespace... >> %log_path%
+kubectl rollout restart deployment -n xxx
+if errorlevel 1 (
+    echo Failed to restart pods in xxx namespace. >> %log_path%
+    exit /b 1
+)
+echo Pods restarted in xxx namespace. >> %log_path%
+
+:: Restarting all pods in the xxx namespace
+echo Restarting all pods in xxx namespace... >> %log_path%
+kubectl rollout restart deployment -n xxx
+if errorlevel 1 (
+    echo Failed to restart pods in xxx namespace. >> %log_path%
+    exit /b 1
+)
+echo Pods restarted in xxx namespace. >> %log_path%
+
+
+echo.
+echo Command execution completed. Log saved to %log_path%
+

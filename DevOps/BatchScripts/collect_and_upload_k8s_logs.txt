@@ -1,0 +1,51 @@
+@echo off
+setlocal enabledelayedexpansion
+
+:: Get the current date and time using WMIC
+for /f "tokens=2 delims==" %%I in ('wmic os get localdatetime /value') do set "datetime=%%I"
+
+:: Format the date and time for filenames
+set "CURRENT_DATE=!datetime:~0,4!-!datetime:~4,2!-!datetime:~6,2!"
+set "CURRENT_TIME=!datetime:~8,2!-!datetime:~10,2!-!datetime:~12,2!"
+set "CURRENT_DATETIME=%CURRENT_DATE%_%CURRENT_TIME%"
+
+:: Set the namespaces and log directory
+set "NAMESPACES=ns1 ns2 ns3"
+set "LOG_DIR=C:\Logs\Pod_logs"
+
+:: Check if the log directory exists
+if not exist "%LOG_DIR%" (
+    echo The directory %LOG_DIR% does not exist. Please create it and try again.
+    exit /b 1
+)
+
+:: Delete all files in the log directory
+echo Deleting all existing log files in %LOG_DIR%
+del /q "%LOG_DIR%\*.txt"
+
+
+:: Loop through each namespace
+for %%N in (%NAMESPACES%) do (
+    echo Processing namespace: %%N
+
+    :: Get the list of pods in the namespace
+    for /f "delims=" %%P in ('kubectl get pods -n %%N -o name') do (
+        set "POD_NAME=%%~nxP"
+        set "LOG_FILE=%LOG_DIR%\!POD_NAME!_%CURRENT_DATETIME%.txt"
+        echo Saving logs for pod %%P to !LOG_FILE!
+        kubectl logs -n %%N %%P > "!LOG_FILE!"
+    )
+)
+
+echo Logs have been saved to %LOG_DIR%
+
+:: Upload logs to Azure Storage using az CLI
+set "STORAGE_ACCOUNT_NAME=xxx "
+set "CONTAINER_NAME=xxx"
+set "ACCOUNT_KEY=xxx=="
+
+echo Uploading logs to Azure Storage
+az storage blob upload-batch --account-name %STORAGE_ACCOUNT_NAME% --account-key %ACCOUNT_KEY% --destination %CONTAINER_NAME% --source "%LOG_DIR%" --pattern *.txt
+
+echo Log upload completed.
+pause

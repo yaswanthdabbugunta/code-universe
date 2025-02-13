@@ -1,0 +1,10 @@
+@echo off
+setlocal
+
+:: Directory to clean up
+set "storage_dir=path"
+
+:: Find and delete files older than 30 days in storage directory
+forfiles /p "%storage_dir%" /s /m *.* /d -30 /c "cmd /c del @file"
+
+endlocal

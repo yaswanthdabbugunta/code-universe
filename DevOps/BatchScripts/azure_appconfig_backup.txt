@@ -1,0 +1,36 @@
+@echo off
+setlocal enabledelayedexpansion
+
+:: Get the current date in the format YYYYMMDD and extract the parts we need
+for /f "tokens=2 delims==" %%I in ('"wmic os get localdatetime /value"') do set datetime=%%I
+set "year=%datetime:~2,2%"
+set "month=%datetime:~4,2%"
+set "day=%datetime:~6,2%"
+
+:: Construct the current date in the format ddmmyy
+set "current_date=%day%%month%%year%"
+
+:: Construct the log file path
+set "log_folder=%userprofile%"
+set "log_file=log_%current_date%.txt"
+set "log_path=%log_folder%\%log_file%"
+
+echo Logging command output to %log_path%
+echo.
+
+:: Set the connection string directly in the script
+set "connection_string_name=<connstring>"
+
+:: Define the base directory where the backup folder will be created
+set "base_backup_folder=D:\<path>"
+
+:: Create the backup folder with the current date
+set "backup_folder=%base_backup_folder%\Backup_%current_date%"
+if not exist "%backup_folder%" mkdir "%backup_folder%"
+
+:: Construct the backup file name with the current date
+set "backup_file=ProductionAppconfigbackup_%current_date%.json"
+set "backup_path=%backup_folder%\%backup_file%"
+
+:: Call the az appconfig command with the dynamic backup file path
+call az appconfig kv export --connection-string "%connection_string_name%" --destination file --path "%backup_path%" --format json --yes

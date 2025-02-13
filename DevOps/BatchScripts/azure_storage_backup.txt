@@ -1,0 +1,41 @@
+@echo off
+setlocal enabledelayedexpansion
+
+:: Get the current date in the format YYYYMMDD and extract the parts we need
+for /f "tokens=2 delims==" %%I in ('"wmic os get localdatetime /value"') do set datetime=%%I
+set "year=%datetime:~2,2%"
+set "month=%datetime:~4,2%"
+set "day=%datetime:~6,2%"
+
+:: Construct the current date in the format ddmmyy
+set "current_date=%day%%month%%year%"
+
+:: Prompt the user for input
+set /p "staccname=Enter storage account name: "
+set /p "acckey=Enter account key: "
+set /p "filepath=Enter file path: "
+
+:: Create directories with today's date if they don't exist
+set "templatesfullpath=%filepath%\%current_date%\templates"
+set "uploadsfullpath=%filepath%\%current_date%\uploads"
+set "formsfullpath=%filepath%\%current_date%\forms"
+if not exist "%templatesfullpath%" mkdir "%templatesfullpath%"
+if not exist "%uploadsfullpath%" mkdir "%uploadsfullpath%"
+if not exist "%formsfullpath%" mkdir "%formsfullpath%"
+
+:: Download blobs to the specified directory with today's date
+call az storage blob download-batch --source templates --destination "%templatesfullpath%" --pattern *.pdf --account-name %staccname% --account-key %acckey%
+call az storage blob download-batch --source templates --destination "%templatesfullpath%" --pattern *.png --account-name %staccname% --account-key %acckey%
+call az storage blob download-batch --source templates --destination "%templatesfullpath%" --pattern *.jpeg --account-name %staccname% --account-key %acckey%
+call az storage blob download-batch --source templates --destination "%templatesfullpath%" --pattern *.xlsx --account-name %staccname% --account-key %acckey%
+call az storage blob download-batch --source templates --destination "%templatesfullpath%" --pattern *.txt --account-name %staccname% --account-key %acckey%
+call az storage blob download-batch --source uploads --destination "%uploadsfullpath%" --pattern *.pdf --account-name %staccname% --account-key %acckey%
+call az storage blob download-batch --source uploads --destination "%uploadsfullpath%" --pattern *.png --account-name %staccname% --account-key %acckey%
+call az storage blob download-batch --source uploads --destination "%uploadsfullpath%" --pattern *.jpeg --account-name %staccname% --account-key %acckey%
+call az storage blob download-batch --source uploads --destination "%uploadsfullpath%" --pattern *.xlsx --account-name %staccname% --account-key %acckey%
+call az storage blob download-batch --source uploads --destination "%uploadsfullpath%" --pattern *.txt --account-name %staccname% --account-key %acckey%
+call az storage blob download-batch --source generatedforms --destination "%formsfullpath%" --pattern *.pdf --account-name %staccname% --account-key %acckey%
+call az storage blob download-batch --source generatedforms --destination "%formsfullpath%" --pattern *.png --account-name %staccname% --account-key %acckey%
+call az storage blob download-batch --source generatedforms --destination "%formsfullpath%" --pattern *.jpeg --account-name %staccname% --account-key %acckey%
+call az storage blob download-batch --source generatedforms --destination "%formsfullpath%" --pattern *.xlsx --account-name %staccname% --account-key %acckey%
+call az storage blob download-batch --source generatedforms --destination "%formsfullpath%" --pattern *.txt --account-name %staccname% --account-key %acckey%

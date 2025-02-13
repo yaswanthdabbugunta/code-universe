@@ -1,0 +1,61 @@
+@echo off
+setlocal
+
+:: Array of namespaces
+set namespaces=ns1 ns2 ns3
+
+:: Set log path to user profile directory
+set logpath=%userprofile%
+
+:: Set directory containing YAML files
+set yamldir=C:\Deployment_yamls
+
+:: Get the current date and time
+for /f "tokens=2 delims==" %%I in ('wmic os get localdatetime /value') do set datetime=%%I
+set timestamp=%datetime:~0,8%_%datetime:~8,6%
+
+:: Define the output log file
+set logfile=%logpath%\deployments_%timestamp%.txt
+
+
+REM Previous image tags
+echo Logging previous image tags > "%logfile%"
+
+REM Loop through each namespace
+for %%N in %namespaces% do (
+    echo Namespace: %%~N >> "%logfile%"
+
+    REM Retrieve and log the tags of the images before deployment
+    echo Tags of the images before deployment: >> "%logfile%"
+    kubectl get deployments -n %%~N -o wide --ignore-not-found >> "%logfile%"
+)
+
+echo Deployment logging completed.
+
+:: Initialize the logfile
+echo Logging deployment and pod details > "%logfile%"
+
+:: Loop through each namespace
+for %%n in (%namespaces%) do (
+    echo Namespace: %%n >> "%logfile%"
+
+    :: Delete existing deployments using YAML files
+    echo Deleting deployments for namespace %%n...
+    kubectl delete -f "%yamldir%\%%n\" --ignore-not-found
+
+    :: Apply new deployment YAML files
+    echo Applying new deployment YAML files for namespace %%n...
+    kubectl apply -f "%yamldir%\%%n\"
+
+    :: Log deployment details
+    kubectl get deployments -n %%n -o wide >> "%logfile%"
+
+    :: Log pod status
+    echo Pod status for namespace %%n >> "%logfile%"
+    kubectl get pods -n %%n -o wide >> "%logfile%"
+    echo -------------------------------------- >> "%logfile%"
+)
+
+echo Deployment and pod details logged successfully in %logfile%.
+
+endlocal
