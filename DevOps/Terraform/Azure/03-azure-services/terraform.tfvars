@@ -1,0 +1,8 @@
+resource_group_location   = "centralindia"
+resource_group_name_misc  = "prd-dev-misc-rg"
+storage_account_name      = "prddevstgacc"
+app_configuration_name    = "prd-dev-appconf"
+redis_cache_name          = "prd-dev-cache"
+keyvault_name             = "prd-dev-kv"
+eventhub_namespace_name   = "prd-dev-ehubs"
+servicebus_namespace_name = "prd-dev-sbus"

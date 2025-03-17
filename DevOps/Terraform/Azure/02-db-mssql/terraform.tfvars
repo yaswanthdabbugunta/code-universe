@@ -1,0 +1,7 @@
+resource_group_location = "centralindia"
+resource_group_name_db  = "prd-ft-dev-db-rg"
+sql_server_name         = "prd-ft-dev-db"
+sql_database_name       = "prddevdb"
+sql_admin_login         = "admin-ft"
+sql_admin_password      = "@Aa123456789!"
+#db_auditing_stacc       = "iccmddevstdbaudit"
